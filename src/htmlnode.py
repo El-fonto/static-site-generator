@@ -12,13 +12,24 @@ class HTMLNode:
         raise NotImplementedError
 
     def props_to_html(self):
-        if not isinstance(self.props, dict):
-            raise TypeError("props must be a dictionary")
-
-        html = ""
+        if self.props is None:
+            return ""
+        props_html = ""
         for tag, attribute in self.props.items():
-            html += f' {tag}="{attribute}"'
-        return html
+            props_html += f' {tag}="{attribute}"'
+        return props_html
 
     def __repr__(self) -> str:
-        return f"HTMLNode: ({self.tag}, {self.value}, {self.children}, {self.props})"
+        return f"HTMLNode: ({self.tag}, {self.value}, children: {self.children}, {self.props})"
+
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props=None):
+        super().__init__(tag, value, children=None, props=props)
+
+    def to_html(self):
+        if self.value is None:
+            raise ValueError("All leaf nodes must have a value")
+        if self.tag is None:
+            return self.value
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"

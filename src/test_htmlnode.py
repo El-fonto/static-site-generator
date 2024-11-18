@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -16,14 +16,33 @@ class TestHTMLNode(unittest.TestCase):
         props = {"href": "https://www.google.com", "target": "_blank"}
 
         node = HTMLNode(tag, value, children, props)
-        expected_str = "HTMLNode: (p, this is a paragraph inside a tag, ['child_node_1', 'child_node_2', 'child_node_3'], {'href': 'https://www.google.com', 'target': '_blank'})"
-
+        expected_str = "HTMLNode: (p, this is a paragraph inside a tag, children: ['child_node_1', 'child_node_2', 'child_node_3'], {'href': 'https://www.google.com', 'target': '_blank'})"
         self.assertEqual(str(node), expected_str)
 
     def test_to_html_mthd(self):
         node = HTMLNode(props={"href": "https://www.google.com", "target": "_blank"})
         with self.assertRaises(NotImplementedError):
             node.to_html()
+
+    def test_leaf_render_noprops(self):
+        node = LeafNode("p", "This is a paragraph of text.")
+        expected_str = "<p>This is a paragraph of text.</p>"
+        self.assertEqual(node.to_html(), expected_str)
+
+    def test_leaf_render_props(self):
+        node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
+        expected_str = '<a href="https://www.google.com">Click me!</a>'
+        self.assertEqual(node.to_html(), expected_str)
+
+    def test_leaf_no_value(self):
+        node = LeafNode("a", None)
+        with self.assertRaises(ValueError):
+            node.to_html()
+
+    def test_leaf_no_tag(self):
+        node = LeafNode(None, "I'm a value with no tag")
+        expected_str = "I'm a value with no tag"
+        self.assertEqual(node.to_html(), expected_str)
 
 
 if __name__ == "__main__":

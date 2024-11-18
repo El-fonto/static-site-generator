@@ -2,15 +2,6 @@ from enum import Enum
 
 
 class TextType(Enum):
-    """
-    NORMAL = "normal"
-    BOLD = "**bold**"
-    ITALIC = "*italic*"
-    CODE = "```\ncode\n```"
-    LINK = "[link text](link)"
-    IMAGE = "![alt text](url)"
-    """
-
     NORMAL = "normal"
     BOLD = "bold"
     ITALIC = "italic"
@@ -25,11 +16,11 @@ class TextNode:
         self.text_type = TextType(text_type)
         self.url = url
 
-    def __eq__(self, TextNode):
+    def __eq__(self, other):
         return (
-            self.text == TextNode.text
-            and self.text_type == TextNode.text_type
-            and self.url == TextNode.url
+            self.text == other.text
+            and self.text_type == other.text_type
+            and self.url == other.url
         )
 
     def __repr__(self) -> str:
