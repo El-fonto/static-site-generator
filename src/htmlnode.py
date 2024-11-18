@@ -15,9 +15,9 @@ class HTMLNode:
         if not isinstance(self.props, dict):
             raise TypeError("props must be a dictionary")
 
-        html = " "
+        html = ""
         for tag, attribute in self.props.items():
-            html += f'{tag}="{attribute}" '
+            html += f' {tag}="{attribute}"'
         return html
 
     def __repr__(self) -> str:
