@@ -34,6 +34,9 @@ class LeafNode(HTMLNode):
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
+    def __repr__(self) -> str:
+        return f"LeafNode({self.tag}, {self.value}, {self.props})"
+
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
@@ -45,13 +48,16 @@ class ParentNode(HTMLNode):
         if self.children is None:
             raise ValueError("Parent node needs children nodes")
         if not self.children:
-            return f"<{self.tag}{self.props_to_html()}></{self.tag}"
+            return f"<{self.tag}{self.props_to_html()}></{self.tag}>"
 
-        processed_children = []
+        children_html = []
         # base case
         for child in self.children:
             # child needs to be a HTMLNode or a LeafNode object
-            processed_children.append(child.to_html())
-        joined = "".join(processed_children)
+            children_html.append(child.to_html())
+        joined = "".join(children_html)
 
         return f"<{self.tag}{self.props_to_html()}>{joined}</{self.tag}>"
+
+    def __repr__(self) -> str:
+        return f"ParentNode({self.tag}, children: {self.children}, {self.props})"
