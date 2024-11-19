@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -42,6 +42,19 @@ class TestHTMLNode(unittest.TestCase):
     def test_leaf_no_tag(self):
         node = LeafNode(None, "I'm a value with no tag")
         expected_str = "I'm a value with no tag"
+        self.assertEqual(node.to_html(), expected_str)
+
+    def test_parent_only_leafs(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        expected_str = "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
         self.assertEqual(node.to_html(), expected_str)
 
 

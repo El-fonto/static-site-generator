@@ -1,5 +1,5 @@
 from textnode import TextNode
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 def main():
@@ -14,8 +14,9 @@ def main():
     # HTMLNode
     tag = "p"
     value = "this is a paragraph inside a tag"
-    children = ["child_node_1", "child_node_2", "child_node_3"]
     props = {"href": "https://www.google.com", "target": "_blank"}
+    # children_4_parents = []
+    children = [HTMLNode(tag, value, props), LeafNode(tag, value, props)]
 
     test_node_2 = TextNode(text, text_type2, url)
     test_node_1 = TextNode(text, text_type, url)
@@ -23,11 +24,17 @@ def main():
     full_html = HTMLNode(tag, value, children, props)
     partial_html = HTMLNode(children=children, props=props)
     only_props_test = full_html.props_to_html()
+    parent_node = ParentNode(
+        "p",
+        [children],
+    )
+    parent_html = parent_node.to_html()
 
     # prints
     print(f"html child-props test: {partial_html}")
     print(f"html props test: {only_props_test}")
     print(f"html test: {full_html}")
+    print(f"parent test: {parent_html}")
 
     print(f"text test 1: {test_node_1}")
     print(f"text test 2: {test_node_2}")
