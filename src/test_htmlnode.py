@@ -57,6 +57,28 @@ class TestHTMLNode(unittest.TestCase):
         expected_str = "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
         self.assertEqual(node.to_html(), expected_str)
 
+    def test_parent_w_1parent(self):
+        node = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    tag="b",
+                    children=[
+                        LeafNode(None, "Normal text"),
+                        LeafNode("i", "italic text"),
+                        LeafNode(None, "Normal text"),
+                    ],
+                ),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        expected_str = (
+            "<div><b>Bold text</b>Normal text<i>italic text</i>Normal text</div>"
+        )
+        self.assertEqual(node.to_html(), expected_str)
+
 
 if __name__ == "__main__":
     unittest.main()
