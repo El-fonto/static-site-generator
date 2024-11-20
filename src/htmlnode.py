@@ -37,6 +37,13 @@ class LeafNode(HTMLNode):
     def __repr__(self) -> str:
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
 
+    def __eq__(self, other):
+        return (
+            self.tag == other.tag
+            and self.value == other.value
+            and self.props == other.props
+        )
+
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
@@ -50,14 +57,12 @@ class ParentNode(HTMLNode):
         if not self.children:
             return f"<{self.tag}{self.props_to_html()}></{self.tag}>"
 
-        children_html = []
+        children_html = ""
         # base case
         for child in self.children:
             # child needs to be a HTMLNode or a LeafNode object
-            children_html.append(child.to_html())
-        joined = "".join(children_html)
-
-        return f"<{self.tag}{self.props_to_html()}>{joined}</{self.tag}>"
+            children_html += child.to_html()
+        return f"<{self.tag}{self.props_to_html()}>{children_html}</{self.tag}>"
 
     def __repr__(self) -> str:
         return f"ParentNode({self.tag}, children: {self.children}, {self.props})"

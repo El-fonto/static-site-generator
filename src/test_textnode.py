@@ -10,8 +10,8 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(node, node2)
 
     def test_normal(self):
-        node = TextNode("That is another node", TextType.NORMAL)
-        node2 = TextNode("That is another node", TextType.NORMAL)
+        node = TextNode("That is another node", TextType.TEXT)
+        node2 = TextNode("That is another node", TextType.TEXT)
         self.assertEqual(node, node2)
 
     def test_urls(self):

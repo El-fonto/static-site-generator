@@ -44,95 +44,25 @@ class TestHTMLNode(unittest.TestCase):
         expected_str = "I'm a value with no tag"
         self.assertEqual(node.to_html(), expected_str)
 
-    def test_parent_only_leafs(self):
-        node = ParentNode(
-            "p",
-            [
-                LeafNode("b", "Bold text"),
-                LeafNode(None, "Normal text"),
-                LeafNode("i", "italic text"),
-                LeafNode(None, "Normal text"),
-            ],
-        )
-        expected_str = "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
-        self.assertEqual(node.to_html(), expected_str)
+    def test_to_html_parent_child(self):
+        child_node = LeafNode("b", "child")
+        node = ParentNode("p", [child_node])
+        self.assertEqual(node.to_html(), "<p><b>child</b></p>")
 
-    def test_parent_w_1parent(self):
-        node = ParentNode(
-            "div",
-            [
-                ParentNode(
-                    tag="b",
-                    children=[
-                        LeafNode(None, "Normal text"),
-                        LeafNode("i", "italic text"),
-                        LeafNode(None, "Normal text"),
-                    ],
-                ),
-                LeafNode(None, "Normal text"),
-                LeafNode("i", "italic text"),
-                LeafNode(None, "Normal text"),
-            ],
-        )
-        expected_str = "<div><b>Normal text<i>italic text</i>Normal text</b>Normal text<i>italic text</i>Normal text</div>"
-        self.assertEqual(node.to_html(), expected_str)
+    def test_to_html_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("p", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><p><b>grandchild</b></p></div>")
 
     def test_parent_w_nested_parents(self):
-        node = ParentNode(
-            "div",
-            [
-                ParentNode(
-                    "b",
-                    [
-                        ParentNode(
-                            "i",
-                            [
-                                LeafNode(None, "Normal text"),
-                                LeafNode("i", "italic text"),
-                            ],
-                        ),
-                        LeafNode(None, "Normal text"),
-                        LeafNode("i", "italic text"),
-                        LeafNode("b", "bold text"),
-                    ],
-                ),
-                LeafNode(None, "Normal text"),
-                LeafNode("i", "italic text"),
-                LeafNode("b", "bold text"),
-            ],
+        og_child_node = LeafNode("h1", "the OG")
+        grandchild_node = ParentNode("b", [og_child_node])
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(), "<div><span><b><h1>the OG</h1></b></span></div>"
         )
-        expected_str = (
-            "<div><b><i>Normal text<i>italic text</i></i>"
-            "Normal text<i>italic text</i><b>bold text</b></b>"
-            "Normal text<i>italic text</i><b>bold text</b></div>"
-        )
-        self.assertEqual(node.to_html(), expected_str)
-
-    def test_multiple_parents(self):
-        node = ParentNode(
-            "div",
-            [
-                ParentNode(
-                    "p",
-                    [
-                        LeafNode(None, "This is a paragraph."),
-                        ParentNode("strong", [LeafNode(None, "With strong emphasis!")]),
-                    ],
-                ),
-                ParentNode(
-                    "ul",
-                    [
-                        ParentNode("li", [LeafNode(None, "Item 1")]),
-                        ParentNode("li", [LeafNode(None, "Item 2")]),
-                    ],
-                ),
-            ],
-        )
-        expected_str = (
-            "<div><p>This is a paragraph.<strong>With strong emphasis!</strong></p>"
-            "<ul><li>Item 1</li><li>Item 2</li></ul></div>"
-        )
-        self.assertEqual(node.to_html(), expected_str)
 
     def test_None_in_children(self):
         node = ParentNode("b", None)

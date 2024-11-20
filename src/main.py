@@ -1,40 +1,39 @@
 from textnode import TextNode, TextType
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import LeafNode
 
 
 def main():
-    node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
+    node = TextNode("normal text", TextType.TEXT, "https://www.boot.dev")
     html_node = text_node_to_html_node(node)
-    print(node)
     print(html_node)
 
 
 def text_node_to_html_node(text_node):
     # Error checking done
-    #
     if not isinstance(text_node.text_type, TextType):
         raise ValueError("invalid text_type")
 
     # TODO:
     # Check with if statements using method notation
     #
-    if text_node.text_type.TEXT:
+    if text_node.text_type == TextType.TEXT:
         return LeafNode(None, text_node.text)
 
-    if text_node.text_type.BOLD:
+    elif text_node.text_type == TextType.BOLD:
         return LeafNode("b", text_node.text)
 
-    if text_node.text_type.ITALIC:
+    elif text_node.text_type == TextType.ITALIC:
         return LeafNode("i", text_node.text)
 
-    if text_node.text_type.CODE:
+    elif text_node.text_type == TextType.CODE:
         return LeafNode("code", text_node.text)
 
-    if text_node.text_type.LINK:
+    elif text_node.text_type == TextType.LINK:
         return LeafNode("a", text_node.text, {"href": text_node.url})
 
-    if text_node.text_type.IMAGE:
-        return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+    elif text_node.text_type == TextType.IMAGE:
+        return LeafNode("img", {"src": text_node.url, "alt": text_node.text})
 
 
-main()
+if __name__ == "__main__":
+    main()
