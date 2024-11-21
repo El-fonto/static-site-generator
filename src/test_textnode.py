@@ -1,5 +1,6 @@
 import unittest
 
+from nodeparser import split_node_delimiter
 from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import LeafNode
 
@@ -64,8 +65,10 @@ class TestConversion(unittest.TestCase):
         )
 
 
-class TestSplitDelimiter(unittest.TestCase):
-    def test_split_delimitter(self):
+class TestSplitNodeDelimiter(unittest.TestCase):
+    def test_basic_bold_split(self):
+        nodes = [TextNode("This is **bold** text", TextType.TEXT)]
+        result = [split_node_delimiter(nodes, "**", TextType.BOLD)]
         pass
 
 
