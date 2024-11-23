@@ -2,13 +2,17 @@ from textnode import TextType, TextNode
 
 
 def main():
+    node = TextNode("Before *bolded text* after", TextType.TEXT)
+
     old_nodes = [
-        TextNode("italic", TextType.ITALIC),
-        TextNode("bold", TextType.BOLD),
-        TextNode("This is text with a **bolded phrase** in the middle", TextType.TEXT),
+        node,
+        # TextNode("Before **bolded ** after", TextType.TEXT),
+        # TextNode("Before `code` after", TextType.TEXT),
     ]
 
-    print(split_node_delimiter(old_nodes, "**", TextType.BOLD))
+    print(f"giving the old_nodes as: {old_nodes}")
+    print("================== I GET =================")
+    print(f"{split_node_delimiter(old_nodes, "*", TextType.BOLD)}")
 
 
 def split_node_delimiter(old_nodes, delimiter, text_type):
@@ -16,10 +20,6 @@ def split_node_delimiter(old_nodes, delimiter, text_type):
         new_nodes = []
         for old_node in old_nodes:
             # Base case
-            if not hasattr(old_node, "text_type"):
-                new_nodes.append(old_node)
-                continue
-
             if old_node.text_type != TextType.TEXT:
                 new_nodes.append(old_node)
                 continue
@@ -31,21 +31,15 @@ def split_node_delimiter(old_nodes, delimiter, text_type):
             before, rest = old_node.text.split(delimiter, 1)
             new_nodes.append(TextNode(before, TextType.TEXT))
 
+            # closing delimiter check
             if delimiter not in rest:
                 raise ValueError("Invalid markdown syntax")
 
             middle, after = rest.split(delimiter, 1)
-            if delimiter == "**":
-                new_nodes.append(TextNode(middle, TextType.BOLD))
-            if delimiter == "*":
-                new_nodes.append(TextNode(middle, TextType.ITALIC))
-            if delimiter == "`":
-                new_nodes.append((TextNode(middle, TextType.CODE)))
+            new_nodes.append(TextNode(middle, text_type))
 
             if after:
                 new_nodes.extend(splitter([TextNode(after, TextType.TEXT)]))
-
-            new_nodes.extend(splitter([after]))
 
         return new_nodes
 

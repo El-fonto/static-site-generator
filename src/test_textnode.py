@@ -69,7 +69,10 @@ class TestSplitNodeDelimiter(unittest.TestCase):
     def test_basic_bold_split(self):
         nodes = [TextNode("This is **bold** text", TextType.TEXT)]
         result = [split_node_delimiter(nodes, "**", TextType.BOLD)]
-        pass
+        expected =
+        self.assertEqual(
+
+        )
 
 
 if __name__ == "__main__":

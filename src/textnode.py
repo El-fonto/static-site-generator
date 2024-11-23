@@ -24,8 +24,11 @@ class TextNode:
             and self.url == other.url
         )
 
-    def __repr__(self) -> str:
-        return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+    def __repr__(self):
+        repr_str = f"TextNode({self.text}, {self.text_type})"
+        if self.url is not None:
+            repr_str += f", {self.url}"
+        return repr_str
 
 
 def text_node_to_html_node(text_node):
@@ -42,4 +45,4 @@ def text_node_to_html_node(text_node):
     if text_node.text_type == TextType.LINK:
         return LeafNode("a", text_node.text, {"href": text_node.url})
     if text_node.text_type == TextType.IMAGE:
-        return LeafNode("img", {"src": text_node.url, "alt": text_node.text})
+        return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
