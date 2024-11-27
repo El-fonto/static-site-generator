@@ -33,3 +33,19 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         return new_nodes
 
     return splitter(old_nodes)
+
+
+def extract_markdown_images(text):
+    # The text would look like this:
+    # This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+    # print(extract_markdown_images(text))
+    # [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+    #
+    # Will use regex to get it.
+    # It takes a list and return a list of tuples
+    pass
+
+
+def extract_markdown_links(text):
+    # same but with anchor text and links
+    pass
