@@ -1,6 +1,5 @@
 import unittest
 
-from nodeparser import split_node_delimiter
 from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import LeafNode
 
@@ -28,7 +27,9 @@ class TestTextNode(unittest.TestCase):
 
     def test_repr(self):
         node = TextNode("This is a text node", TextType.TEXT, "google.com")
-        self.assertEqual("TextNode(This is a text node, text, google.com)", repr(node))
+        self.assertEqual(
+            "TextNode(This is a text node, TextType.TEXT, google.com)", repr(node)
+        )
 
 
 class TestConversion(unittest.TestCase):
@@ -62,16 +63,6 @@ class TestConversion(unittest.TestCase):
         html_node = text_node_to_html_node(node)
         self.assertEqual(
             html_node, LeafNode("img", {"src": node.url, "alt": node.text})
-        )
-
-
-class TestSplitNodeDelimiter(unittest.TestCase):
-    def test_basic_bold_split(self):
-        nodes = [TextNode("This is **bold** text", TextType.TEXT)]
-        result = [split_node_delimiter(nodes, "**", TextType.BOLD)]
-        expected =
-        self.assertEqual(
-
         )
 
 
