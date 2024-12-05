@@ -48,4 +48,5 @@ def extract_markdown_images(text):
 
 def extract_markdown_links(text):
     # same but with anchor text and links
+    # We need to use regex
     pass
