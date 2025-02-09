@@ -30,9 +30,48 @@ children: {self.children}
 props: {self.props}"""
 
 
-# def main():
-# dummy_props = { "href": "https://www.google.com", "target": "_blank", }
+class LeafNode(HTMLNode):
+    def __init__(
+        self,
+        tag: str,
+        value: str,
+        props: dict[str, str] = None,
+    ):
+        super().__init__(tag, value, children=None, props=props)
 
-# node = HTMLNode(props=dummy_props)
+    def to_html(self):
+        if self.value is None:
+            raise ValueError("invalid HTML: no value")
+        elif self.tag is None:
+            return self.value
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
-# print(node.props_to_html())
+    def __repr__(self):
+        return f""" LeafNode:
+tag: {self.tag}
+value: {self.value}
+props: {self.props}"""
+
+
+"""
+def main():
+    dummy_tag = "a"
+    dummy_value = "dummy text"
+    dummy_props = {
+        "href": "https://www.google.com",
+        "target": "_blank",
+    }
+
+    htmlnode = HTMLNode(props=dummy_props)
+
+    leafnode = LeafNode(dummy_tag, dummy_value, props=dummy_props)
+
+    print("HTMLNode: ", end="")
+    print(htmlnode.props_to_html())
+
+    print("LeafNode: ", end="")
+    print(leafnode.to_html())
+
+
+main()
+"""
