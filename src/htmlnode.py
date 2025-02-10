@@ -53,6 +53,23 @@ value: {self.value}
 props: {self.props}"""
 
 
+class ParentNode(HTMLNode):
+    def __init__(
+        self,
+        tag: str,
+        children: list[str],
+        props: dict[str, str] = None,
+    ):
+        super().__init__(tag, value=None, children=children, props=props)
+
+    def to_html(self):
+        if self.tag is None:
+            raise ValueError("ParentNode needs tag")
+        elif len(self.children) == 0:
+            raise ValueError("ParentNode needs to have children")
+        return f""
+
+
 """
 def main():
     dummy_tag = "a"
