@@ -17,10 +17,10 @@ class HTMLNode:
     def props_to_html(self):
         if self.props is None:
             return ""
-        html_string = ""
+        props_html = ""
         for key, value in self.props.items():
-            html_string += f' {key}="{value}"'
-        return html_string
+            props_html += f' {key}="{value}"'
+        return props_html
 
     def __repr__(self):
         return f""" HTMLNode:
@@ -37,12 +37,12 @@ class LeafNode(HTMLNode):
         value: str,
         props: dict[str, str] = None,
     ):
-        super().__init__(tag, value, children=None, props=props)
+        super().__init__(tag, value, None, props=props)
 
     def to_html(self):
         if self.value is None:
             raise ValueError("invalid HTML: no value")
-        elif self.tag is None:
+        if self.tag is None:
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
@@ -57,17 +57,35 @@ class ParentNode(HTMLNode):
     def __init__(
         self,
         tag: str,
-        children: list[str],
+        children: list[HTMLNode],
         props: dict[str, str] = None,
     ):
-        super().__init__(tag, value=None, children=children, props=props)
+        super().__init__(tag, children=children, props=props)
 
     def to_html(self):
         if self.tag is None:
-            raise ValueError("ParentNode needs tag")
-        elif len(self.children) == 0:
-            raise ValueError("ParentNode needs to have children")
-        return f""
+            raise ValueError("invalid ParentNode: needs tag")
+
+        if self.children is None:
+            raise ValueError("ParentNode missing children")
+
+        # parent's tag
+        opening_tag = f"<{self.tag}{self.props_to_html()}>"
+        closing_tag = f"</{self.tag}>"
+
+        # concatenating string
+        children_html = ""
+
+        for child in self.children:
+            children_html += child.to_html()
+
+        return opening_tag + children_html + closing_tag
+
+    def __repr__(self):
+        return f""" ParentNode:
+tag: {self.tag}
+children: {self.children}
+props: {self.props}"""
 
 
 """
@@ -79,15 +97,29 @@ def main():
         "target": "_blank",
     }
 
-    htmlnode = HTMLNode(props=dummy_props)
-
+    # htmlnode = HTMLNode(props=dummy_props)
     leafnode = LeafNode(dummy_tag, dummy_value, props=dummy_props)
+    normalleaf = LeafNode(None, "normal")
+    parentnode1 = ParentNode(
+        "p",
+        [
+            leafnode,
+            leafnode,
+            normalleaf,
+        ],
+    )
 
-    print("HTMLNode: ", end="")
-    print(htmlnode.props_to_html())
-
-    print("LeafNode: ", end="")
-    print(leafnode.to_html())
+    parentnode = ParentNode(
+        "span",
+        [
+            leafnode,
+            parentnode1,
+            leafnode,
+            parentnode1,
+        ],
+    )
+    print("ParentNode: ", end="")
+    print(parentnode.to_html())
 
 
 main()
