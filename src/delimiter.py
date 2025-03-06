@@ -11,10 +11,36 @@ def split_nodes_delimiter(
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
 
-        if delimiter == "**" and text_type is TextType.BOLD:
-            splitted = old_node.text.split(delimiter)
+        text = old_node.text
 
-            new_nodes.append(splitted)
+        if delimiter in text:
+            # splitted = text.split(delimiter)
+
+            i = 0
+            current_text = ""
+            is_formatted = False
+            delimiter_length = len(delimiter)
+
+            while i < len(text):
+                if (
+                    i <= len(text) - delimiter_length
+                    and text[i : i + delimiter_length] == delimiter
+                ):
+                    if current_text:
+                        if is_formatted:
+                            new_nodes.append(TextNode(current_text, text_type))
+                        else:
+                            new_nodes.append(TextNode(current_text, TextType.TEXT))
+
+                    is_formatted = False
+
+                    i += delimiter_length
+                else:
+                    current_text += text[i]
+                    i += 1
+
+            if current_text:
+                new_nodes.append(TextNode(current_text, TextType.TEXT))
 
     return new_nodes
 
