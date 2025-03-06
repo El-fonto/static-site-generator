@@ -1,5 +1,7 @@
 import unittest
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from textnode import TextNode, TextType, text_node_to_html_node
+import textnode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -124,6 +126,52 @@ class TestParentNode(unittest.TestCase):
         self.assertEqual(
             node.to_html(),
             "<h2><b>Bold text</b>Normal text<i>italic text</i>Normal text</h2>",
+        )
+
+
+class TestConversionNode(unittest.TestCase):
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
+
+    def test_single_tag(self):
+        bold_node = TextNode("bold text", TextType.BOLD)
+        bold_html_node = text_node_to_html_node(bold_node)
+
+        italic_node = TextNode("italic text", TextType.ITALIC)
+        italic_html_node = text_node_to_html_node(italic_node)
+
+        code_node = TextNode("code text", TextType.CODE)
+        code_html_node = text_node_to_html_node(code_node)
+
+        # bold
+        self.assertEqual(bold_html_node.tag, "b")
+        self.assertEqual(bold_html_node.value, "bold text")
+
+        # italic
+        self.assertEqual(italic_html_node.tag, "i")
+        self.assertEqual(italic_html_node.value, "italic text")
+
+        # code
+        self.assertEqual(code_html_node.tag, "code")
+        self.assertEqual(code_html_node.value, "code text")
+
+    def test_link(self):
+        link_node = TextNode("My Google page", TextType.LINK, "google.com")
+        html_node = text_node_to_html_node(link_node)
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, "My Google page")
+        self.assertEqual(html_node.props, {"href": "google.com"})
+
+    def test_image(self):
+        node = TextNode("alt text", TextType.IMAGE, "google.com/image.jpg")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, "")
+        self.assertEqual(
+            html_node.props, {"href": "google.com/image.jpg", "alt": "alt text"}
         )
 
 
