@@ -47,49 +47,76 @@ def extract_markdown_links(text: str) -> list[tuple[str, str]]:
 def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
     new_nodes = []
     for old_node in old_nodes:
-        # extract the list of tuples
-        link_node_tup = extract_markdown_links(old_node.text)
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
 
-        # base case to exit if no links/images in node
-        if len(link_node_tup) == 0:
-            new_nodes.append([old_node])
+        # extract list of tuples
+        link_tups = extract_markdown_links(old_node.text)
 
-        # need to count how many links are there
-        #
-        # probably, tup indexes will be a variable; i.e. `i` and `i+1`, to account the number of links
+        # base case: don't process if no links/images in node
+        if not link_tups:
+            new_nodes.append(old_node)
+            continue
 
-        if len(link_node_tup) != 0:
+        # original text
+        remaining_text = old_node.text
+
+        # iterate over list, assigning tuple values to variables
+        for link_text, link_url in link_tups:
+            # find the markdown link and split at the first ocurrence for each element
+            parts = remaining_text.split(f"[{link_text}]({link_url})", 1)
+
+            if len(parts) != 2:
+                raise ValueError("invalid markdown, link section not closed")
+
+            # append what's before the link
+            if parts[0]:
+                new_nodes.append(TextNode(parts[0], TextType.TEXT))
+
             new_nodes.append(
-                TextNode(
-                    text=link_node_tup[0][0],
-                    text_type=TextType.LINK,
-                    url=link_node_tup[0][1],
-                )
+                TextNode(text=link_text, text_type=TextType.LINK, url=link_url)
             )
+
+            # reprocess remaining_text after the link
+            if len(parts) > 1:
+                remaining_text = parts[1]
+            else:
+                remaining_text = ""
+
+        # add remaining text after links are processed
+        if remaining_text != "":
+            new_nodes.append(TextNode(remaining_text, TextType.TEXT))
 
     return new_nodes
 
 
-def main():
-    node = TextNode(
-        "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
-        TextType.TEXT,
-    )
-    node_no_links = TextNode("text with no links", TextType.TEXT)
+def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
+    new_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
 
-    new_nodes = split_nodes_link([node, node_no_links])
+        images = extract_markdown_images(old_node.text)
+        if not images:
+            new_nodes.append(old_node)
+            continue
+        remaining_text = old_node.text
 
-    print("EXTRACTED: ", end="")
-    print(extract_markdown_links(node.text))
-    print("SPLITTED: ", end="")
-    print(new_nodes)
+        for image_alt, image_link in images:
+            parts = remaining_text.split(f"![{image_alt}]({image_link})", 1)
 
+            if len(parts) != 2:
+                raise ValueError("invalid markdown, image section not closed")
+            if parts[0]:
+                new_nodes.append(TextNode(parts[0], TextType.TEXT))
 
-main()
-# def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
-#    new_nodes = []
-#    for old_node in old_nodes:
-#        # if old_node.text_type !=
-#        if extract_markdown_images(old_node.text):
-#            new_nodes.append(old_node)
-#    return new_nodes
+            new_nodes.append(TextNode(image_alt, TextType.IMAGE, image_link))
+            if len(parts) > 1:
+                remaining_text = parts[1]
+            else:
+                remaining_text = ""
+        if remaining_text != "":
+            new_nodes.append(TextNode(remaining_text, TextType.TEXT))
+    return new_nodes
