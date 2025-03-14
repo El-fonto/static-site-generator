@@ -1,5 +1,6 @@
-from enum import Enum
 import re
+from enum import Enum
+from htmlnode import HTMLNode
 
 
 class BlockType(Enum):
@@ -9,35 +10,6 @@ class BlockType(Enum):
     QUOTE = "quote"
     ULIST = "unordered_list"
     OLIST = "ordered_list"
-
-
-"""
-def block_to_block_type(markdown: str) -> BlockType:
-    headings_pattern = r"^#{1,6} .*$"
-    code_pattern = r"^```[\s\S]*?```$"
-    quote_pattern = r"^> .*(\n> .*)*$"
-    u_list_pattern = r"^- .*(\n- .*)*$"
-    o_list_pattern = r"^[1-9][0-9]*\. .*(\n[1-9][0-9]*\. .*)*$"
-
-    match_heading = re.search(headings_pattern, markdown)
-    match_code = re.search(code_pattern, markdown)
-    match_quote = re.search(quote_pattern, markdown)
-    match_unordered = re.search(u_list_pattern, markdown)
-    match_ordered = re.search(o_list_pattern, markdown)
-
-    if match_heading:
-        return BlockType.HEADING
-    elif match_code:
-        return BlockType.CODE
-    elif match_quote:
-        return BlockType.QUOTE
-    elif match_unordered:
-        return BlockType.U_LIST
-    elif match_ordered:
-        return BlockType.O_LIST
-    else:
-        return BlockType.PARAGRAPH
-"""
 
 
 def block_to_block_type(block: str) -> BlockType:
@@ -75,6 +47,18 @@ def markdown_to_blocks(markdown: str) -> list[str]:
         if block != "":
             filtered_blocks.append(block)
     return filtered_blocks
+
+
+def markdown_to_html_node(markdown: str) -> HTMLNode:
+    # divide document into blocks
+    blocks = markdown_to_blocks(markdown)
+
+    # iterate through blocks and classify them
+    for block in blocks:
+        # get block type
+        block_type = block_to_block_type(block)
+
+    return HTMLNode()
 
 
 """
