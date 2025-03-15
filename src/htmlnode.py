@@ -8,10 +8,10 @@ class HTMLNode:
     ):
         self.tag = tag
         self.value = value
-        self.children = children
+        self.children = children or []
         self.props = props
 
-    def to_html(self):
+    def to_html(self) -> str:
         raise NotImplementedError
 
     def props_to_html(self) -> str:
