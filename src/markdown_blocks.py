@@ -1,6 +1,7 @@
 import re
 from enum import Enum
 from htmlnode import HTMLNode
+from inline_markdown import text_to_textnodes
 
 
 class BlockType(Enum):
@@ -49,16 +50,32 @@ def markdown_to_blocks(markdown: str) -> list[str]:
     return filtered_blocks
 
 
+# def assign_block_types(block_type: BlockType) -> HTMLNode:
+
+
 def markdown_to_html_node(markdown: str) -> HTMLNode:
     # divide document into blocks
     blocks = markdown_to_blocks(markdown)
+
+    # add all nodes to return final product
+    child_nodes = []
 
     # iterate through blocks and classify them
     for block in blocks:
         # get block type
         block_type = block_to_block_type(block)
 
-    return HTMLNode()
+        # get children to instatiate appropriate HTMLNodes
+        children = text_to_children(block)
+
+    parent = HTMLNode("div", None, child_nodes)
+
+    return parent
+
+
+def text_to_children(text: str) -> list[HTMLNode]:
+    text_nodes = text_to_textnodes(text)
+    return text_nodes
 
 
 """
