@@ -76,7 +76,13 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
 
         elif block_type == BlockType.QUOTE:
             quote_node = ParentNode(tag="blockquote", children=[])
-            quote_node.children = text_to_children(block.lstrip(">").strip())
+            quote_lines = []
+            for line in block.split("\n"):
+                if line.startswith(">"):
+                    quote_line = line[1:].strip()
+                    quote_lines.append(quote_line)
+            quote_content = " ".join(quote_lines)
+            quote_node.children = text_to_children(quote_content)
             children_nodes.append(quote_node)
 
         elif block_type == BlockType.ULIST:
@@ -136,28 +142,3 @@ def text_to_children(text: str) -> list[HTMLNode]:
         child = text_node_to_html_node(text_node)
         html_nodes.append(child)
     return html_nodes
-
-
-def main():
-    md = """
-> the best of times
-
-```
-the best of codes 
-```
-
-# h1
-
-## h2
-
-- unordered_list_pattern
-
-1. order things
-"""
-
-    html = markdown_to_html_node(md)
-    print("html: ", end="")
-    print(html)
-
-
-main()
