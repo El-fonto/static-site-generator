@@ -1,5 +1,5 @@
 from enum import Enum
-from htmlnode import HTMLNode, ParentNode, LeafNode
+from htmlnode import HTMLNode, ParentNode
 from inline_markdown import text_to_textnodes
 from textnode import TextNode, TextType, text_node_to_html_node
 
@@ -64,7 +64,8 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
 
         if block_type == BlockType.PARAGRAPH:
             paragraph_node = ParentNode(tag="p", children=[])
-            paragraph_node.children = text_to_children(block)
+            paragraph_text = block.replace("\n", " ").strip()
+            paragraph_node.children = text_to_children(paragraph_text)
             children_nodes.append(paragraph_node)
 
         elif block_type == BlockType.HEADING:
@@ -137,9 +138,8 @@ def text_to_children(text: str) -> list[HTMLNode]:
     return html_nodes
 
 
-"""
 def main():
-    md = 
+    md = """
 > the best of times
 
 ```
@@ -153,17 +153,11 @@ the best of codes
 - unordered_list_pattern
 
 1. order things
+"""
 
-    blocks = markdown_to_blocks(md)
-    print("blocks: ", end="")
-    print(blocks)
-
-    for block in blocks:
-        block_type = block_to_block_type(block)
-        print()
-        print("block type: ", end="")
-        print(block_type)
+    html = markdown_to_html_node(md)
+    print("html: ", end="")
+    print(html)
 
 
 main()
-"""
