@@ -1,5 +1,5 @@
 from enum import Enum
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, ParentNode, LeafNode
 from inline_markdown import text_to_textnodes
 from textnode import TextNode, TextType, text_node_to_html_node
 
@@ -50,7 +50,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
     return filtered_blocks
 
 
-def markdown_to_html_node(markdown: str) -> HTMLNode:
+def markdown_to_html_node(markdown: str) -> ParentNode:
     # divide document into blocks
     blocks = markdown_to_blocks(markdown)
 
@@ -63,41 +63,41 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
         block_type = block_to_block_type(block)
 
         if block_type == BlockType.PARAGRAPH:
-            paragraph_node = HTMLNode(tag="p", value=None)
+            paragraph_node = ParentNode(tag="p", children=[])
             paragraph_node.children = text_to_children(block)
             children_nodes.append(paragraph_node)
 
         elif block_type == BlockType.HEADING:
             heading_level = len(block) - len(block.lstrip("#"))
-            heading_node = HTMLNode(tag=f"h{heading_level}", value=None)
+            heading_node = ParentNode(tag=f"h{heading_level}", children=[])
             heading_node.children = text_to_children(block.lstrip("#").strip())
             children_nodes.append(heading_node)
 
         elif block_type == BlockType.QUOTE:
-            quote_node = HTMLNode(tag="blockquote", value=None)
+            quote_node = ParentNode(tag="blockquote", children=[])
             quote_node.children = text_to_children(block.lstrip(">").strip())
             children_nodes.append(quote_node)
 
         elif block_type == BlockType.ULIST:
-            ul_node = HTMLNode(tag="ul", value=None)
+            ul_node = ParentNode(tag="ul", children=[])
             li_nodes = []
             for line in block.split("\n"):
                 if line.strip():
-                    list_node = HTMLNode(tag="li", value=None)
+                    list_node = ParentNode(tag="li", children=[])
                     list_node.children = text_to_children(line.lstrip("- ").strip())
                     li_nodes.append(list_node)
             ul_node.children = li_nodes
             children_nodes.append(ul_node)
 
         elif block_type == BlockType.OLIST:
-            ol_node = HTMLNode(tag="ol", value=None)
+            ol_node = ParentNode(tag="ol", children=[])
             li_nodes = []
             for line in block.split("\n"):
                 if line.strip():
                     parts = line.strip().split(". ", 1)
                     if len(parts) > 1 and parts[0].isdigit():
                         content = parts[1]
-                        list_node = HTMLNode(tag="li", value=None)
+                        list_node = ParentNode(tag="li", children=[])
                         list_node.children = text_to_children(content)
                         li_nodes.append(list_node)
             ol_node.children = li_nodes
@@ -105,24 +105,22 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
 
         elif block_type == BlockType.CODE:
             # outer tag
-            pre_node = HTMLNode(tag="pre", value=None)
+            pre_node = ParentNode(tag="pre", children=[])
             # inner tag
-            code_node = HTMLNode(tag="code", value=None)
+            code_node = ParentNode(tag="code", children=[])
             # manual creation of a node to avoid parsing inline markdown
-            text_node = TextNode(block.lstrip("```\n").rstrip("\n```"), TextType.TEXT)
+            text_node = TextNode(block.lstrip("```\n").rstrip("```"), TextType.TEXT)
             html_txt = text_node_to_html_node(text_node)
             # assign each layer to the next as children
 
             # conditional statement to be more explicit and comply with type hints
-            if code_node.children is None:
-                code_node.children = []
             code_node.children.append(html_txt)
 
-            pre_node.children = [code_node]
+            pre_node.children.append(code_node)
             children_nodes.append(pre_node)
 
     # final node that will be returned
-    parent_html = HTMLNode("div", None, children_nodes)
+    parent_html = ParentNode("div", children_nodes)
 
     return parent_html
 

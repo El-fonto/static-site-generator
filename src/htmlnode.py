@@ -8,7 +8,7 @@ class HTMLNode:
     ):
         self.tag = tag
         self.value = value
-        self.children = children or []
+        self.children = children
         self.props = props
 
     def to_html(self) -> str:
