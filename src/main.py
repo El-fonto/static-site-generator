@@ -1,8 +1,5 @@
-from textnode import TextNode, TextType
+import os
 
+# TODO: recursive functions that.
 
-def main():
-    TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
-
-
-main()
+# check if path exists
