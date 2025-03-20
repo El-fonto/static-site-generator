@@ -19,7 +19,7 @@ def main():
     if check:
         shutil.rmtree(path)
         print(check)
-    #
+    # new things
 
 
 main()
