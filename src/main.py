@@ -20,6 +20,7 @@ def main():
         shutil.rmtree(path)
         print(check)
     # new things
+    # new things 2
 
 
 main()
