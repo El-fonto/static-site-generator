@@ -2,32 +2,32 @@ import os
 import shutil
 
 
-def copy_file_recursive(origin_path, destination_path):
+def copy_file_recursive(from_path, dest_path):
     # handling destination directory
-    if not os.path.exists(destination_path):
+    if not os.path.exists(dest_path):
         try:
-            os.mkdir(destination_path)
-            print(f"Directory created: {destination_path}")
+            os.mkdir(dest_path)
+            print(f"Directory created: {dest_path}")
         except OSError as e:
-            print(f"Error creating directory {destination_path}: {e}")
+            print(f"Error creating directory {dest_path}: {e}")
             return
 
-    if len(os.listdir(origin_path)) == 0:
+    if len(os.listdir(from_path)) == 0:
         print("end of traversing")
         return
-    origin_content = os.listdir(origin_path)
+    origin_content = os.listdir(from_path)
 
     for file in origin_content:
-        or_full_path = os.path.join(origin_path, file)
-        dest_full_path = os.path.join(destination_path, file)
+        from_full_path = os.path.join(from_path, file)
+        dest_full_path = os.path.join(dest_path, file)
 
-        if os.path.isfile(or_full_path):
-            shutil.copy(or_full_path, dest_full_path)
-        elif os.path.isdir(or_full_path):
+        if os.path.isfile(from_full_path):
+            shutil.copy(from_full_path, dest_full_path)
+        elif os.path.isdir(from_full_path):
             try:
                 os.mkdir(dest_full_path)
                 print(f"Directory created successfully: {dest_full_path}")
-                copy_file_recursive(or_full_path, dest_full_path)
+                copy_file_recursive(from_full_path, dest_full_path)
             except FileExistsError:
                 print(f"Directory already exists: {dest_full_path}")
             except OSError as e:
