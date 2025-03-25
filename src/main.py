@@ -21,7 +21,7 @@ def main():
     if os.path.exists(DOCS_PATH):
         shutil.rmtree(DOCS_PATH)
 
-    print("Copying static files to docs directory")
+    print("Copying static files to public directory")
     copy_file_recursive(STATIC_PATH, DOCS_PATH)
 
     print("Generating pages...")
