@@ -35,13 +35,10 @@ Here's the deal, **I like Tolkien**.
 
 Here's what `elflang` looks like (the perfect coding language):
 
-```elflang
+```
 func main(){
     fmt.Println("Aiya, Ambar!")
 }
 ```
 
-Want to get in touch? [Contact me here](/contact).
-
-This site was generated with a custom-built [static site generator](https://www.boot.dev/courses/build-static-site-generator-python)
-from the course on [Boot.dev](https://www.boot.dev).
+Want to get in touch? [Contact me here](/contact). This site was generated with a custom-built [static site generator](https://www.boot.dev/courses/build-static-site-generator-python) from the course on [Boot.dev](https://www.boot.dev).

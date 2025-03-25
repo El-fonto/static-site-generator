@@ -23,12 +23,5 @@ def copy_file_recursive(from_path, dest_path):
 
         if os.path.isfile(from_full_path):
             shutil.copy(from_full_path, dest_full_path)
-        elif os.path.isdir(from_full_path):
-            try:
-                os.mkdir(dest_full_path)
-                print(f"Directory created successfully: {dest_full_path}")
-                copy_file_recursive(from_full_path, dest_full_path)
-            except FileExistsError:
-                print(f"Directory already exists: {dest_full_path}")
-            except OSError as e:
-                print(f"Error creating directory {dest_full_path}: {e}")
+        else:
+            copy_file_recursive(from_full_path, dest_full_path)
