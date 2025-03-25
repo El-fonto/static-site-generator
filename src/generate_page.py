@@ -29,9 +29,12 @@ def generate_page(from_path, template_path, dest_path, basepath):
     template = template_html.replace(r"{{ Title }}", title)
     template = template.replace(r"{{ Content }}", html_content)
 
-    basepath = basepath.rstrip("/") + "/"
-    template = template.replace('href="/', f'href="{basepath}')
-    template = template.replace('src="/', f'src="{basepath}')
+    if basepath.endswith("/"):
+        template = template.replace('href="/', f'href="{basepath}')
+        template = template.replace('src="/', f'src="{basepath}')
+    else:
+        template = template.replace('href="/', f'href="{basepath}/')
+        template = template.replace('src="/', f'src="{basepath}/')
 
     dest_dir = os.path.dirname(dest_path)
     if not os.path.exists(dest_dir):
