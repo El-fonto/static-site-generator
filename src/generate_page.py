@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from markdown_blocks import markdown_to_html_node
 
 
@@ -8,13 +9,10 @@ def extract_title(markdown: str):
     if not markdown_lines:
         raise ValueError("There's no h1 header")
 
-    first_line = markdown_lines[0].lstrip()
-
-    if first_line.startswith("# "):
-        title = first_line[2:].strip()
-        return title
-    else:
-        raise ValueError("There's no h1 header")
+    for line in markdown_lines:
+        if line.startswith("# "):
+            return line[2:].strip()
+    raise ValueError("There's no h1 header")
 
 
 def generate_page(from_path, template_path, dest_path):
@@ -33,7 +31,25 @@ def generate_page(from_path, template_path, dest_path):
 
     dest_dir = os.path.dirname(dest_path)
     if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
+        os.makedirs(dest_dir, exist_ok=True)
 
     with open(dest_path, "w") as d:
         d.write(contented_added)
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    content_dirs = os.listdir(dir_path_content)
+    for file in content_dirs:
+        content_full_path = os.path.join(dir_path_content, file)
+        destination_full_path = os.path.join(dest_dir_path, file)
+
+        if os.path.isfile(content_full_path):
+            content_path = Path(content_full_path)
+            if content_path.suffix.lower() == "md":
+                dest_path = Path(destination_full_path)
+                dest_path = dest_path.with_suffix(".html")
+                generate_page(content_full_path, template_path, str(dest_path))
+        else:
+            generate_pages_recursive(
+                content_full_path, template_path, destination_full_path
+            )
