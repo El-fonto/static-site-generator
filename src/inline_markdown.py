@@ -22,7 +22,7 @@ def split_nodes_delimiter(
 
         # that meant that there is one section before the delimiter and one after
         if len(sections) % 2 == 0:
-            raise ValueError("ivnalid Markdown, formatted section not closed")
+            raise ValueError("invalid Markdown, formatted section not closed")
         for i in range(len(sections)):
             if sections[i] == "":
                 continue
