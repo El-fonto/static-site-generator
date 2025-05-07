@@ -17,9 +17,7 @@ A quote that I really liked:
 
 ## Blog posts from template
 
-- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)
-- [Why Tom Bombadil Was a Mistake](/blog/tom)
-- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)
+- [Why making a diary for my tutoring?](/blog/diary)
 
 ## Reasons I like talking with people
 
